@@ -58,6 +58,7 @@ function MenuLogin(){
             break;
         case '3':
             MyCar();
+            MenuLogin();
             break;
         default:
             MenuErrorLogin()
