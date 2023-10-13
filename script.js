@@ -1,19 +1,20 @@
-//imports holaasd
-class User {
-
-    constructor(name, email, age, password) {
-        this.name = name;
-        this.email = email;
-        this.age = age;
-        this.password = password;
-    }
-}
-
-
-
-
+//imports
+import {user as User} from './User.js'
+import {product as Product } from './Products.js'
+import {myCheck as myCheck} from './MyCheck.js'
 let users = [];
-Menu();
+let  myCarr = [];
+let  listado = [];
+const product1 = new Product(1,'laptop',305, 10)
+const product2 = new Product(2,'TV LG', 500, 5)
+const product3 = new Product(3,'Iphone 14', 1000,3)
+
+
+listado.push(product1);
+listado.push(product2);
+listado.push(product3);
+
+ Menu();
 function Menu(){
     switch(prompt("por favor ingrese una opcion\n1 --> Ingresar\n2 --> Registrarse")){
         case '1':
@@ -39,14 +40,84 @@ function Login(){
         Login();
     }
     if(user.password == userPassword){
-        alert("Bienvenido: " + user.name)
+        MenuLogin()
     }else{
-        alert("Nombre de usuario o contraseña no validos intente nuevamente");
+        alert("Nombre de usuario o contraseña no validos intente nuevamente");2
         MenuErrorLogin();
     }
 
 }
 
+function MenuLogin(){
+    switch(prompt("por favor ingrese una opcion\n1 --> Ver Listado de Productos\n2 --> Comprar Productos\n3 --> Mi Carrito")){
+        case '1':
+            ProductList()
+            break;
+        case '2':
+            BuyProducts()
+            break;
+        case '3':
+            MyCar();
+            break;
+        default:
+            MenuErrorLogin()
+    }
+
+}
+function MyCar(){
+    let strListado  = '';
+    let total = 0;
+    myCarr.forEach(function (i){
+        strListado += 'Nombre: '+String(i.product.name) +' Precio: '+i.product.price+' Qantidad: '+String(i.quantity)+' SubTotal: '+  +String(i.subTotal)+'\n'
+        total += i.subTotal;
+     })
+    alert("Los Products Son\n" + strListado+'\n-------------------------\n Total: '+ total)
+}
+function BuyProducts(){
+    let Product = ValidarProduct(prompt('Por Favor ingrese la id del producto'))
+    let Quantity = ValidarQuantity(prompt('Por Favor ingrese la cantidad que desea comprar'),Product)
+    let subTotal = 0;
+    subTotal += Product.price * Quantity;
+    let check = new myCheck(Product,Quantity,subTotal)
+    myCarr.push(check);
+    alert("Guardado Con exito")
+    MenuLogin();
+}
+
+function ValidarProduct(idStr){
+
+    let id = parseInt(idStr);
+    if(isNaN(id)){
+        ValidarProduct(prompt('Por Favor ingrese la id del producto valida'))
+    }
+
+    const item = listado.find((p) => p.id === id);
+
+    if( typeof item === 'undefined'){
+        ValidarProduct(prompt('Por Favor ingrese la id del producto valida'))
+    }
+    return item;
+
+}
+function ValidarQuantity(QuantityStr,product){
+    let Quantity = parseInt(QuantityStr);
+    if(isNaN(Quantity)){
+        ValidarQuantity(prompt('Por Favor ingrese una Cantidad de Stock Valida'), product)
+    }
+    if(Quantity > product.stock){
+        ValidarQuantity(prompt(`No tenemos esa cantidad de productos, el maximo de stock en este momento es:  ${product.stock} por favor intente nuevamente`),product)
+    }
+    return Quantity;
+}
+function ProductList(){
+   
+    let strListado  = '';
+    listado.forEach(function (i){
+       strListado += 'id: '+String(i.id) +' Nombre: '+i.name+' Precio: $'+String(i.price)+' Stock: '+String(i.stock)+'\n'
+    })
+    alert("Los Products Son\n" + strListado)
+    MenuLogin()
+}
 function MenuErrorLogin(){
     switch(prompt("por favor ingrese una opcion\n1 --> Reintentar\n2 --> Salir")){
         case '1':
